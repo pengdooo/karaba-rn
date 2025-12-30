@@ -28,7 +28,9 @@ export default function Index() {
       <View style={styles.webviewContainer}>
         <WebView
           ref={webviewRef}
-          source={{ uri: "http://172.30.1.92:3000/inspect/requests" }}
+          source={{
+            uri: `${process.env.EXPO_PUBLIC_BASE_URL}/inspect/requests`,
+          }}
           style={styles.webview}
           decelerationRate={0.998}
           allowsBackForwardNavigationGestures
