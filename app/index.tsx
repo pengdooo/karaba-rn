@@ -30,7 +30,7 @@ export default function Index() {
           ref={webviewRef}
           source={{ uri: "http://172.30.1.92:3000/inspect/requests" }}
           style={styles.webview}
-          decelerationRate="normal"
+          decelerationRate={0.998}
           allowsBackForwardNavigationGestures
           onNavigationStateChange={(navState) => {
             setCanGoBack(navState.canGoBack);
