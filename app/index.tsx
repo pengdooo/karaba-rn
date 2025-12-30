@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 
@@ -23,7 +23,12 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["left", "right"]}>
+    <SafeAreaView
+      style={styles.container}
+      edges={
+        Platform.OS === "android" ? ["top", "left", "right"] : ["left", "right"]
+      }
+    >
       <StatusBar style="dark" backgroundColor="#ffffff" />
       <View style={styles.webviewContainer}>
         <WebView
