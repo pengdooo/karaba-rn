@@ -1,7 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useRef, useState } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 
@@ -39,9 +45,23 @@ export default function Index() {
           style={styles.webview}
           decelerationRate={0.998}
           allowsBackForwardNavigationGestures
+          mediaPlaybackRequiresUserAction={false} // ✅ 핵심
+          allowsInlineMediaPlayback={true}
           onNavigationStateChange={(navState) => {
             setCanGoBack(navState.canGoBack);
             setCanGoForward(navState.canGoForward);
+          }}
+          onShouldStartLoadWithRequest={(request) => {
+            // BASE_URL이 포함되어 있지 않은 외부 링크인 경우 외부 브라우저로 오픈
+            if (
+              process.env.EXPO_PUBLIC_BASE_URL &&
+              !request.url.startsWith(process.env.EXPO_PUBLIC_BASE_URL) &&
+              request.url.startsWith("http")
+            ) {
+              Linking.openURL(request.url);
+              return false;
+            }
+            return true;
           }}
         />
       </View>
