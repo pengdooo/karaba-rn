@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.potatojoayo.karabarn"
+      "bundleIdentifier": "com.karaba.inspection",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +24,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.potatojoayo.karabarn"
+      "package": "com.karaba.inspection"
     },
     "web": {
       "output": "static",
@@ -42,6 +45,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8a9646e7-2b50-49f6-b82f-9b34b35a1ed9"
+      }
     }
   }
 }

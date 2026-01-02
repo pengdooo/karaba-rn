@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  BackHandler,
   Linking,
   Platform,
   StyleSheet,
@@ -28,11 +29,30 @@ export default function Index() {
     if (webviewRef.current) webviewRef.current.reload();
   };
 
+  useEffect(() => {
+    const onBackPress = () => {
+      if (canGoBack && webviewRef.current) {
+        webviewRef.current.goBack();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler =
+      Platform.OS === "android"
+        ? BackHandler.addEventListener("hardwareBackPress", onBackPress)
+        : null;
+
+    return () => backHandler?.remove();
+  }, [canGoBack]);
+
   return (
     <SafeAreaView
       style={styles.container}
       edges={
-        Platform.OS === "android" ? ["top", "left", "right"] : ["left", "right"]
+        Platform.OS === "android"
+          ? ["top", "bottom", "left", "right"]
+          : ["left", "right"]
       }
     >
       <StatusBar style="dark" backgroundColor="#ffffff" />
