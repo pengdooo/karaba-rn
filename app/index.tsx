@@ -72,6 +72,11 @@ export default function Index() {
             setCanGoForward(navState.canGoForward);
           }}
           onShouldStartLoadWithRequest={(request) => {
+            // Vercel Feedback 등의 특정 도메인 차단
+            if (request.url.includes("vercel.live")) {
+              return false;
+            }
+
             // BASE_URL이 포함되어 있지 않은 외부 링크인 경우 외부 브라우저로 오픈
             if (
               process.env.EXPO_PUBLIC_BASE_URL &&
