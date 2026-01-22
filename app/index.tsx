@@ -1,5 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
+import {
+  StorageAccessFramework,
+  writeAsStringAsync,
+} from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
@@ -94,18 +98,37 @@ export default function Index() {
             try {
               const data = JSON.parse(event.nativeEvent.data);
               if (data.type === "downloadExcel") {
-                const file = new FileSystem.File(
-                  FileSystem.Paths.document,
-                  data.fileName,
-                );
+                const mimeType =
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-                // Base64 데이터를 파일로 저장
-                file.write(data.payload, {
-                  encoding: "base64",
-                });
+                if (Platform.OS === "android") {
+                  // 안드로이드: 공유창 대신 폴더 선택창(SAF)을 띄워 직접 저장
+                  const permissions =
+                    await StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-                // 유저에게 공유/저장창 띄우기
-                await Sharing.shareAsync(file.uri);
+                  if (permissions.granted) {
+                    const uri = await StorageAccessFramework.createFileAsync(
+                      permissions.directoryUri,
+                      data.fileName,
+                      mimeType,
+                    );
+
+                    // SAF URI는 legacy 경로의 writeAsStringAsync 함수를 사용해야 에러가 나지 않음
+                    await writeAsStringAsync(uri, data.payload, {
+                      encoding: "base64",
+                    });
+                  }
+                } else {
+                  // iOS: 공유창 유지 (파일 앱 저장이 기본 지원됨)
+                  const file = new FileSystem.File(
+                    FileSystem.Paths.document,
+                    data.fileName,
+                  );
+                  file.write(data.payload, {
+                    encoding: "base64",
+                  });
+                  await Sharing.shareAsync(file.uri);
+                }
               }
             } catch (err) {
               console.error("Excel download error:", err);
