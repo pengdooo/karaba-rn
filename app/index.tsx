@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -87,6 +89,27 @@ export default function Index() {
               return false;
             }
             return true;
+          }}
+          onMessage={async (event) => {
+            try {
+              const data = JSON.parse(event.nativeEvent.data);
+              if (data.type === "downloadExcel") {
+                const file = new FileSystem.File(
+                  FileSystem.Paths.document,
+                  data.fileName,
+                );
+
+                // Base64 데이터를 파일로 저장
+                file.write(data.payload, {
+                  encoding: "base64",
+                });
+
+                // 유저에게 공유/저장창 띄우기
+                await Sharing.shareAsync(file.uri);
+              }
+            } catch (err) {
+              console.error("Excel download error:", err);
+            }
           }}
         />
       </View>
