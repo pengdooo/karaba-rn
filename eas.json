@@ -22,6 +22,9 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_BASE_URL": "https://www.karabaauction.com"
+      },
+      "android": {
+        "buildType": "apk"
       }
     }
   },
